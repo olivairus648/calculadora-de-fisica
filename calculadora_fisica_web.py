@@ -11,7 +11,7 @@ st.set_page_config(
     page_icon="🚀"
 )
 
-# CSS moderno: dark purple gradiente, glassmorphism cards, hover effects, fonte Inter (clean e legível)
+# CSS moderno: dark purple gradiente, glassmorphism cards, hover effects, fonte Inter
 st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -92,9 +92,16 @@ st.markdown("""
 st.title("Calculadora de Física - Mateus 🚀")
 st.markdown("Escolha uma fórmula, veja a ilustração e calcule! Unidades em SI (m, m/s, s, kg, etc.)")
 
-# Função auxiliar para inputs (com min_value onde faz sentido)
+# Função auxiliar para inputs
 def ler_float(label, key, value=0.0, step=0.1, min_value=None):
-    return st.number_input(label, value=value, step=step, format="%.2f", key=key, min_value=min_value)
+    return st.number_input(
+        label,
+        value=value,
+        step=step,
+        format="%.2f",
+        key=key,
+        min_value=min_value
+    )
 
 # Sidebar
 opcao = st.sidebar.selectbox(
@@ -116,7 +123,6 @@ opcao = st.sidebar.selectbox(
 
 st.markdown("---")
 
-# Conteúdo principal em cards
 with st.container():
     if opcao == "Velocidade média":
         with st.container():
@@ -129,7 +135,7 @@ with st.container():
             with col1:
                 ds = ler_float("Deslocamento (Δs) [m]", "vm_ds")
             with col2:
-                dt = ler_float("Tempo (Δt) [s]", "vm_dt", min_value=0.01)
+                dt = ler_float("Tempo (Δt) [s]", "vm_dt")  # ← corrigido: sem min_value > value
             
             if st.button("Calcular Vm", key="btn_vm"):
                 if dt > 0:
@@ -169,8 +175,34 @@ with st.container():
                     st.error("Tempo não pode ser negativo!")
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # ... Adicione os outros elifs da mesma forma (usando .card e .result-box)
-    # Exemplo para Queda Livre (faça igual para todos os restantes):
+    elif opcao == "Aceleração":
+        with st.container():
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.subheader("Aceleração (a = Δv / Δt)")
+            st.image("https://br.neurochispas.com/wp-content/uploads/2023/06/Grafico-de-velocidade-vs-tempo-con-declive-e-area.png",
+                     caption="Gráfico v vs t: declive = aceleração", use_column_width=True)
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                v0 = ler_float("Velocidade inicial (v₀) [m/s]", "a_v0")
+            with col2:
+                vf = ler_float("Velocidade final (vf) [m/s]", "a_vf")
+            with col3:
+                t = ler_float("Tempo (Δt) [s]", "a_t", min_value=0.0)
+            
+            if st.button("Calcular a", key="btn_aceleracao"):
+                if t > 0:
+                    a = (vf - v0) / t
+                    st.markdown(f'<div class="result-box">Aceleração a = **{a:.2f} m/s²**</div>', unsafe_allow_html=True)
+                    if a > 0:
+                        st.info("→ Acelerando")
+                    elif a < 0:
+                        st.info("→ Desacelerando")
+                    else:
+                        st.info("→ Velocidade constante")
+                else:
+                    st.error("Tempo deve ser maior que zero!")
+            st.markdown('</div>', unsafe_allow_html=True)
 
     elif opcao == "Queda Livre / Lançamento Vertical":
         with st.container():
@@ -192,7 +224,6 @@ with st.container():
                     st.error("Velocidade inicial ≥ 0!")
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # Para o lançamento oblíquo (com gráfico), envolva em card:
     elif opcao == "Lançamento Oblíquo (Projétil)":
         with st.container():
             st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -202,9 +233,9 @@ with st.container():
             
             col1, col2 = st.columns(2)
             with col1:
-                v0 = ler_float("Velocidade inicial (v₀) [m/s]", "proj_v0", min_value=0.1)
+                v0 = ler_float("Velocidade inicial (v₀) [m/s]", "proj_v0", min_value=0.0)
             with col2:
-                theta = ler_float("Ângulo θ [graus]", "proj_theta", value=45.0, min_value=0.1, max_value=90.0)
+                theta = ler_float("Ângulo θ [°]", "proj_theta", value=45.0)
             
             if st.button("Calcular Projétil", key="btn_projetil"):
                 if v0 > 0 and 0 < theta <= 90:
@@ -232,8 +263,9 @@ with st.container():
                     st.error("Velocidade > 0 e ângulo entre 0° e 90°!")
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # Continue adicionando os outros (Energia cinética, Força, Lei de Hooke, Potência) no mesmo padrão com .card e .result-box
+    # Adicione aqui os outros cálculos (Energia cinética, Força, Lei de Hooke, Potência Mecânica, etc.)
+    # seguindo o mesmo padrão: .card, colunas quando possível, .result-box no sucesso
 
-# Rodapé clean
+# Rodapé
 st.markdown("---")
 st.caption("Feito por Mateus | Python + Streamlit | Imagens educativas | 2026")
