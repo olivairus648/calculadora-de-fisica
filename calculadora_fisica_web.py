@@ -268,4 +268,4 @@ with st.container():
 
 # Rodapé
 st.markdown("---")
-st.caption("Feito por Mateus | Python + Streamlit | Imagens educativas | 2026")
+st.caption("Feito por Mateus | CSS + Streamlit | Imagens educativas | 2026")
