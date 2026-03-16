@@ -1,2 +1,2 @@
 # calculadora-de-fisica
-calculadora de fisica com 6 opções de calculo feito em python
+calculadora de fisica com  opções de calculo feito 
